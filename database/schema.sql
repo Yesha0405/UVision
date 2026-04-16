@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS recommendations (
   recommended_time_end TIME NOT NULL,
   duration_minutes INT UNSIGNED NOT NULL,
   expected_vitamin_d DECIMAL(8,2) NOT NULL,
-  risk_level ENUM('Low', 'Moderate', 'High') NOT NULL,
+  risk_level ENUM('Low', 'Moderate', 'High', 'Very High', 'Extreme') NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT fk_recommendation_user
     FOREIGN KEY (user_id) REFERENCES users(id)

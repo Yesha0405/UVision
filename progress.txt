@@ -5,10 +5,10 @@ Progress Tracker
 Current Phase:
 - Phase 1: Frontend UI scaffold
 - Phase 2: Database design
-- Phase 3: Backend scaffold
-- Phase 4: Frontend-backend integration
-- Phase 5: Extended profile, health, and admin integration
-- Phase 6: Python IoT and AI integration
+- Phase 3: Backend scaffold and API integration
+- Phase 4: Python IoT ingestion
+- Phase 5: AI/ML recommendation module
+- Phase 6: Documentation and runbook alignment
 
 Completed:
 - Created landing page
@@ -21,38 +21,45 @@ Completed:
 - Created admin panel page
 - Created MySQL schema
 - Created MySQL seed data
-- Created database setup guide
-- Updated project docs with local MySQL connection steps
-- Created Node.js backend scaffold
-- Added MySQL connection configuration
-- Added initial API routes for auth, UV, exposure, and recommendations
-- Removed password hashing for the current project stage
-- Added demo login credentials in docs
-- Added backend run guide
-- Connected auth page to backend API
-- Connected dashboard to UV, recommendation, and exposure APIs
-- Connected exposure tracker to backend save/load flow
-- Added health lab results table and seed data
-- Added profile API and frontend integration
-- Added health API and frontend integration
-- Added admin API and frontend integration
+- Added backend routes, controllers, config, and services
+- Connected frontend flows to backend APIs
 - Added Python UV serial reader with simulation mode
-- Added Python AI recommendation engine
-- Connected backend recommendation routes to Python AI module
-- Added AI recommendation page backend integration
-- Added shared CSS theme
-- Added shared JavaScript for demo live updates and charts
-- Added README.md
-- Added RUNNING_GUIDE.md
-- Added progress tracking file
+- Added Python AI recommendation engine integration with Node
+- Upgraded AI module to support:
+- dataset preprocessing
+- feature engineering
+- synthetic target creation
+- Linear Regression baseline training
+- Random Forest training
+- model artifact saving with joblib
+- optional Flask prediction API
+- rule-based fallback when trained models are missing
+- Extended recommendation inputs to include weather and user overrides
+- Expanded risk levels to Low, Moderate, High, Very High, and Extreme
+- Updated README.md
+- Updated RUNNING_GUIDE.md
+- Updated progress.txt
+- Added `python-dotenv`, `pandas`, `numpy`, `scikit-learn`, `joblib`, and `Flask` to Python requirements
 
 Pending:
-- Authentication backend
-- Real-time DB-driven dashboard updates
-- PDF report export
+- Add the real Kaggle Indian weather dataset file or documented local path
+- Train models on the chosen dataset and validate metrics on real data
+- Switch backend to HTTP-based Flask AI service if required by final architecture
+- Replace plain-text authentication with hashed passwords and sessions/JWT
+- Validate the full Arduino USB serial flow on real hardware
+- Add PDF/export features and final dashboard polish
 
-Next Step:
-- Run and verify live UV ingestion with MySQL, then polish dashboard real-time behavior
+Current Working Behavior:
+- Backend can read/write MySQL data
+- Frontend pages load and use backend APIs
+- Python UV ingestion can simulate and store UV readings
+- Recommendation generation works through Node -> Python integration
+- AI script can train models from a supplied dataset path
+- AI script can serve predictions through Flask or stdin
+- If no trained model exists yet, prediction still works using fallback logic
+
+Next Recommended Step:
+- Place the Kaggle Indian weather CSV on the machine, train both AI models, inspect `python/ai/models/training_summary.json`, and then test `/api/recommendations/calculate/:userId` with richer weather inputs
 
 Last Updated:
-- Frontend, database, backend, Python IoT, and AI integration updated on 2026-04-16
+- Code and docs aligned on 2026-04-16

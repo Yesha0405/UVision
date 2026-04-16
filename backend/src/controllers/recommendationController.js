@@ -30,7 +30,20 @@ async function calculateRecommendation(req, res, next) {
       exposureDuration: req.body?.exposure_duration || null,
       uvIndexOverride: req.body?.uv_index_override ?? null,
       skinTypeOverride: req.body?.skin_type_override || null,
-      lifestyleOverride: req.body?.lifestyle_override || null
+      lifestyleOverride: req.body?.lifestyle_override || null,
+      ageOverride: req.body?.age_override ?? null,
+      temperature: req.body?.temperature_celsius ?? req.body?.temperature ?? null,
+      humidity: req.body?.humidity ?? null,
+      cloud: req.body?.cloud ?? null,
+      visibilityKm: req.body?.visibility_km ?? null,
+      airQualityPm25: req.body?.['air_quality_PM2.5'] ?? req.body?.air_quality_PM25 ?? req.body?.air_quality_pm25 ?? null,
+      windKph: req.body?.wind_kph ?? null,
+      pressureMb: req.body?.pressure_mb ?? null,
+      feelsLikeCelsius: req.body?.feels_like_celsius ?? null,
+      sunrise: req.body?.sunrise ?? null,
+      sunset: req.body?.sunset ?? null,
+      locationName: req.body?.location_name ?? null,
+      lastUpdated: req.body?.last_updated ?? null
     });
 
     res.json({

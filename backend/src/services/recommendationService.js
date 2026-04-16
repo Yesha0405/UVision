@@ -3,7 +3,7 @@ const { runPythonScript } = require('../utils/pythonRunner');
 
 async function getUserForRecommendation(userId) {
   const [rows] = await pool.query(
-    `SELECT id, name, skin_type, lifestyle
+    `SELECT id, name, age, skin_type, lifestyle
      FROM users
      WHERE id = ?
      LIMIT 1`,
@@ -29,7 +29,25 @@ async function getLatestUvIndex() {
 }
 
 async function calculateAndStoreRecommendation(userId, options = {}) {
-  const { exposureDuration = null, uvIndexOverride = null, skinTypeOverride = null, lifestyleOverride = null } = options;
+  const {
+    exposureDuration = null,
+    uvIndexOverride = null,
+    skinTypeOverride = null,
+    lifestyleOverride = null,
+    ageOverride = null,
+    temperature = null,
+    humidity = null,
+    cloud = null,
+    visibilityKm = null,
+    airQualityPm25 = null,
+    windKph = null,
+    pressureMb = null,
+    feelsLikeCelsius = null,
+    sunrise = null,
+    sunset = null,
+    locationName = null,
+    lastUpdated = null
+  } = options;
   const user = await getUserForRecommendation(userId);
   const uvIndex = uvIndexOverride !== null && uvIndexOverride !== undefined
     ? Number(uvIndexOverride)
@@ -39,7 +57,20 @@ async function calculateAndStoreRecommendation(userId, options = {}) {
     uv_index: uvIndex,
     skin_type: skinTypeOverride || user.skin_type,
     lifestyle: lifestyleOverride || user.lifestyle,
-    exposure_duration: exposureDuration
+    age: ageOverride || user.age,
+    exposure_duration: exposureDuration,
+    temperature_celsius: temperature,
+    humidity,
+    cloud,
+    visibility_km: visibilityKm,
+    'air_quality_PM2.5': airQualityPm25,
+    wind_kph: windKph,
+    pressure_mb: pressureMb,
+    feels_like_celsius: feelsLikeCelsius,
+    sunrise,
+    sunset,
+    location_name: locationName,
+    last_updated: lastUpdated
   });
 
   const [estimationInsert] = await pool.query(

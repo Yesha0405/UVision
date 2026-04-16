@@ -1,48 +1,31 @@
 # Sunlight Exposure & Vitamin D Recommendation System
 
-This project is being built step by step as a full-stack web application that combines:
+UVision is a full-stack project that combines:
 
-- IoT UV sensor data from Arduino over USB
-- A MySQL relational database
-- Python-based vitamin D estimation and recommendation logic
-- A web dashboard for personalized recommendations
+- Arduino UV sensor readings over USB serial
+- MySQL data storage
+- Node.js APIs for the web app
+- Python-based AI prediction for vitamin D estimation and exposure recommendations
+- A responsive frontend dashboard for users, health tracking, and admin monitoring
 
-## Current Phase
+## Current Status
 
-Phase 1 frontend is complete.
-Phase 2 database design has now been added.
+The repository now includes a working end-to-end project skeleton with real backend, database, IoT ingestion, and AI prediction wiring.
 
-Included in this phase:
+Implemented now:
 
-- Landing page
-- Login and signup UI
-- Dashboard UI
-- Profile page
-- Exposure tracker page
-- AI recommendation page
-- Health tracking page
-- Admin panel page
-- MySQL schema
-- Seed data
-- Database setup guide
-- Node.js backend scaffold
-- MySQL connection configuration
-- Initial REST API routes
-- Frontend to backend API integration for auth, dashboard, and exposure tracker
-- Profile, health, and admin pages connected to backend APIs
-- Python UV ingestion scripts
-- Python AI recommendation engine
-- Shared styling and JavaScript
-- Progress tracker
-- Detailed run instructions
-
-## Planned Stack
-
-- Frontend: HTML, CSS, Bootstrap, JavaScript
-- Backend: Node.js
-- Database: MySQL
-- IoT Middleware: Python with `pyserial`
-- AI Module: Python
+- Multi-page frontend for home, auth, dashboard, profile, tracker, AI recommendation, health, and admin views
+- Node.js + Express backend with CRUD-style APIs
+- MySQL schema and seed data
+- Python UV ingestion script for simulation mode and Arduino serial mode
+- Python AI module with:
+  - rule-based fallback prediction
+  - dataset preprocessing pipeline
+  - synthetic target generation
+  - Linear Regression and Random Forest training
+  - saved model artifacts with `joblib`
+  - optional Flask `/predict` API
+- Backend integration that stores prediction results in MySQL
 
 ## Project Structure
 
@@ -50,124 +33,215 @@ Included in this phase:
 UVision/
 |-- index.html
 |-- pages/
-|   |-- dashboard.html
-|   |-- auth.html
-|   |-- profile.html
-|   |-- tracker.html
-|   |-- ai-recommendation.html
-|   |-- health.html
-|   `-- admin.html
 |-- assets/
-|   |-- css/
-|   |   `-- styles.css
-|   `-- js/
-|       `-- app.js
+|   |-- css/styles.css
+|   `-- js/app.js
+|-- backend/
+|   |-- server.js
+|   `-- src/
+|       |-- config/
+|       |-- controllers/
+|       |-- routes/
+|       |-- services/
+|       `-- utils/
 |-- database/
 |   |-- schema.sql
 |   |-- seed.sql
 |   `-- README.md
-|-- backend/
-|   |-- server.js
-|   |-- README.md
-|   `-- src/
-|       |-- config/
-|       |   `-- db.js
-|       |-- controllers/
-|       `-- routes/
-|-- package.json
-|-- .env.example
 |-- python/
 |   |-- ai/
 |   |   `-- recommendation_engine.py
 |   |-- iot/
 |   |   `-- uv_serial_reader.py
 |   `-- requirements.txt
-|-- progress.txt
-`-- RUNNING_GUIDE.md
+|-- .env.example
+|-- package.json
+|-- RUNNING_GUIDE.md
+`-- progress.txt
 ```
 
-## Notes
+## Technology Stack
 
-- The current frontend still uses mock data in the browser, but the MySQL schema is now ready.
-- A Node.js backend scaffold has now been added and is ready to connect to your local MySQL setup.
-- In the next steps, we can connect the frontend pages to this API, then add the Python UV reader.
-- The UI is designed to match the project theme: sunlight, health, alerts, and analytics.
+- Frontend: HTML, CSS, Bootstrap, JavaScript
+- Backend: Node.js, Express, MySQL
+- IoT Middleware: Python, `pyserial`, `mysql-connector-python`
+- AI/ML: Python, `pandas`, `numpy`, `scikit-learn`, `joblib`, `Flask`
 
-## MySQL Connection On Your Laptop
+## Database Overview
 
-To use the database locally on Windows:
+Main tables:
 
-1. Install MySQL Server if it is not already installed.
-2. Make sure the MySQL service is running.
-3. Open PowerShell or Command Prompt.
-4. Connect using:
+- `users`
+- `weather_uv_data`
+- `exposure_log`
+- `vitamin_d_estimation`
+- `recommendations`
+- `vitamin_d_lab_results`
+
+Important note:
+
+- `recommendations.risk_level` now supports `Low`, `Moderate`, `High`, `Very High`, and `Extreme`
+
+## AI Module Overview
+
+File:
+
+- [python/ai/recommendation_engine.py](/c:/Users/Admin/OneDrive/Desktop/UVision/python/ai/recommendation_engine.py)
+
+The AI module supports three modes:
+
+1. `predict`
+   Reads JSON from stdin and returns a prediction JSON response.
+   This is the mode currently used by the Node backend.
+2. `train`
+   Trains two regressors from a Kaggle weather CSV and saves model artifacts.
+3. `serve`
+   Starts a Flask API with `POST /predict` and `GET /health`.
+
+### Features Used
+
+Mandatory or primary features:
+
+- `uv_index`
+- `temperature_celsius`
+- `humidity`
+- `cloud`
+- `visibility_km`
+- `air_quality_PM2.5`
+- `sunrise`
+- `sunset`
+- `location_name`
+- `last_updated`
+
+Optional enhancements:
+
+- `wind_kph`
+- `pressure_mb`
+- `feels_like_celsius`
+- `age`
+- `skin_type`
+- `lifestyle`
+
+### Feature Engineering
+
+The training pipeline creates:
+
+- `time_of_day`
+- `daylight_duration_hours`
+- `uv_category`
+- `skin_factor`
+- `environmental_factor`
+
+### Target Generation
+
+Because the weather dataset does not include vitamin D labels, the script generates synthetic targets using domain rules:
+
+- `vitamin_d_output`
+- `recommended_exposure_time`
+
+### Model Output
+
+Prediction response includes:
+
+- estimated vitamin D
+- recommended exposure time
+- risk level
+- recommended time window
+- model source (`trained_model` or `rule_based_fallback`)
+
+## Kaggle Dataset Setup
+
+The repo does not currently include the Indian weather dataset file. Use your Kaggle CSV by either:
+
+1. Setting `WEATHER_DATASET_PATH` in `.env`
+2. Passing a path directly with `--dataset`
+
+Example:
 
 ```powershell
-mysql -u root -p
+python python/ai/recommendation_engine.py --mode train --dataset "C:\path\to\indian_weather.csv"
 ```
 
-5. Enter your MySQL password when prompted.
-6. Run the schema:
+After training, the script saves:
 
-```sql
-SOURCE c:/Users/harsh/Desktop/learn code/UVision/database/schema.sql;
+- `python/ai/models/vitamin_d_model.pkl`
+- `python/ai/models/exposure_time_model.pkl`
+- `python/ai/models/training_summary.json`
+
+## Environment Setup
+
+Create `.env` from `.env.example`.
+
+Recommended values:
+
+```env
+PORT=4000
+DB_HOST=localhost
+DB_PORT=3306
+DB_USER=root
+DB_PASSWORD=your_mysql_password
+DB_NAME=uvision_db
+PYTHON_CMD=python
+UV_SERIAL_PORT=COM3
+UV_BAUD_RATE=9600
+UV_READ_INTERVAL=5
+WEATHER_DATASET_PATH=C:\path\to\indian_weather.csv
+AI_API_PORT=5050
 ```
 
-7. Run the seed data:
+## Install
 
-```sql
-SOURCE c:/Users/harsh/Desktop/learn code/UVision/database/seed.sql;
+Node dependencies:
+
+```powershell
+npm install
 ```
 
-8. Check the database:
+Python dependencies:
 
-```sql
-USE uvision_db;
-SHOW TABLES;
-SELECT * FROM users;
+```powershell
+pip install -r python/requirements.txt
 ```
 
-If the `mysql` command is not recognized, open MySQL Command Line Client or add MySQL `bin` to your system PATH.
+This installs the Python packages needed for:
 
-## Backend Run Summary
+- serial ingestion
+- MySQL insertion
+- model training
+- Flask API
+- `dotenv` loading in Python scripts
 
-1. Create `.env` from `.env.example`
-2. Update MySQL username and password
-3. Run `npm install`
-4. Start backend with `npm start`
-5. Test `http://localhost:4000/api/health`
+## Running The System
 
-## Frontend API Integration
+Detailed steps are in [RUNNING_GUIDE.md](/c:/Users/Admin/OneDrive/Desktop/UVision/RUNNING_GUIDE.md).
 
-The frontend now connects to the backend for:
+Quick summary:
 
-- Login and signup
-- Dashboard UV data
-- Latest recommendation data
-- Exposure history
-- Manual exposure log submission
-- Profile load and update
-- Health lab result save and trend display
-- Admin summary, users, UV logs, and recalculation trigger
-- AI recommendation calculation through a Python module
+1. Configure `.env`
+2. Import `database/schema.sql` and `database/seed.sql`
+3. Run `npm start`
+4. Serve the frontend with `python -m http.server 5500`
+5. Test UV ingestion using `python python/iot/uv_serial_reader.py --mode simulate --max-reads 5`
+6. Train AI models if you have the Kaggle dataset
+7. Use `POST /api/recommendations/calculate/:userId` to generate and store predictions
 
-If the backend is not running, the dashboard falls back to demo values so the UI still loads.
+## Current Integration Behavior
 
-## Demo Login Credentials
+- The backend currently invokes Python prediction directly through a child process
+- If trained model files do not exist yet, Python falls back to rule-based estimation
+- The Flask API is available as an optional standalone AI service, but the Node backend does not require it yet
+
+## Demo Accounts
 
 After importing `database/seed.sql`, you can use:
 
-- `aarav@example.com` with password `Aarav@123`
-- `neha@example.com` with password `Neha@123`
-- `rohan@example.com` with password `Rohan@123`
+- `aarav@example.com` / `Aarav@123`
+- `neha@example.com` / `Neha@123`
+- `rohan@example.com` / `Rohan@123`
 
-Passwords are currently stored as plain text in the database for the current project stage.
+## Known Gaps
 
-## Next Recommended Step
-
-Run and verify the Python-driven live data flow:
-
-1. Run UV ingestion in simulation mode and confirm DB inserts
-2. Test `POST /api/recommendations/calculate/:userId`
-3. Connect Arduino serial mode on the correct COM port
-4. Add session-based authentication and report export
+- No Kaggle dataset file is bundled in the repository
+- Authentication still uses plain-text passwords in the current project stage
+- The backend is not yet calling the Python Flask API over HTTP
+- Real Arduino validation still depends on actual hardware and COM port setup

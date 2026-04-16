@@ -1,0 +1,144 @@
+{
+  "dataset_path": "C:\\Users\\Admin\\OneDrive\\Desktop\\UVision\\python\\ai\\data\\indian_weather.csv",
+  "rows_loaded": 5000,
+  "rows_used": 5000,
+  "sample_size": 5000,
+  "csv_columns_loaded": [
+    "air_quality_PM2.5",
+    "cloud",
+    "feels_like_celsius",
+    "humidity",
+    "last_updated",
+    "last_updated_epoch",
+    "location_name",
+    "pressure_mb",
+    "sunrise",
+    "sunset",
+    "temperature_celsius",
+    "uv_index",
+    "visibility_km",
+    "wind_kph"
+  ],
+  "features_used": [
+    "uv_index",
+    "temperature_celsius",
+    "humidity",
+    "cloud",
+    "visibility_km",
+    "air_quality_PM2.5",
+    "wind_kph",
+    "pressure_mb",
+    "feels_like_celsius",
+    "daylight_duration_hours",
+    "hour_of_day",
+    "skin_factor",
+    "environmental_factor",
+    "age",
+    "location_name",
+    "time_of_day",
+    "uv_category",
+    "skin_type",
+    "lifestyle"
+  ],
+  "vitamin_d_model": {
+    "model_name": "random_forest",
+    "mae": 0.8180011882064996,
+    "rmse": 8.209091733341927,
+    "sample_predictions": [
+      {
+        "actual": 28.62,
+        "predicted": 28.58
+      },
+      {
+        "actual": 99.66,
+        "predicted": 99.76
+      },
+      {
+        "actual": 166.0,
+        "predicted": 166.0
+      },
+      {
+        "actual": 168.14,
+        "predicted": 168.17
+      },
+      {
+        "actual": 139.92,
+        "predicted": 139.9
+      }
+    ]
+  },
+  "recommended_exposure_model": {
+    "model_name": "linear_regression",
+    "mae": 0.0,
+    "rmse": 0.0,
+    "sample_predictions": [
+      {
+        "actual": 60.0,
+        "predicted": 60.0
+      },
+      {
+        "actual": 60.0,
+        "predicted": 60.0
+      },
+      {
+        "actual": 60.0,
+        "predicted": 60.0
+      },
+      {
+        "actual": 60.0,
+        "predicted": 60.0
+      },
+      {
+        "actual": 60.0,
+        "predicted": 60.0
+      }
+    ]
+  },
+  "vitamin_d_feature_importance": [
+    {
+      "feature": "num__uv_index",
+      "importance": 0.508263
+    },
+    {
+      "feature": "num__environmental_factor",
+      "importance": 0.410823
+    },
+    {
+      "feature": "cat__uv_category_Low",
+      "importance": 0.042957
+    },
+    {
+      "feature": "num__cloud",
+      "importance": 0.019999
+    },
+    {
+      "feature": "cat__time_of_day_Other",
+      "importance": 0.004917
+    },
+    {
+      "feature": "num__humidity",
+      "importance": 0.003954
+    },
+    {
+      "feature": "num__daylight_duration_hours",
+      "importance": 0.001654
+    },
+    {
+      "feature": "cat__uv_category_Moderate",
+      "importance": 0.001635
+    },
+    {
+      "feature": "num__temperature_celsius",
+      "importance": 0.001631
+    },
+    {
+      "feature": "cat__time_of_day_Morning",
+      "importance": 0.000929
+    }
+  ],
+  "recommended_time_feature_importance": [],
+  "saved_models": {
+    "vitamin_d_model": "C:\\Users\\Admin\\OneDrive\\Desktop\\UVision\\python\\ai\\models\\vitamin_d_model.pkl",
+    "exposure_time_model": "C:\\Users\\Admin\\OneDrive\\Desktop\\UVision\\python\\ai\\models\\exposure_time_model.pkl"
+  }
+}
