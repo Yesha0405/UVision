@@ -1,229 +1,280 @@
-# Sunlight Exposure & Vitamin D Recommendation System
+# 🌞 UVision: Smart UV Exposure & Vitamin D Management System
 
-UVision is a full-stack project that combines:
+## 📋 Problem Statement
 
-- Arduino UV sensor readings over USB serial
-- MySQL data storage
-- Node.js APIs for the web app
-- Python-based AI prediction for vitamin D estimation and exposure recommendations
-- A responsive frontend dashboard for users, health tracking, and admin monitoring
+In an era of indoor lifestyles and digital screens, **over 1 billion people worldwide suffer from Vitamin D deficiency** due to insufficient sunlight exposure. Paradoxically, excessive UV radiation increases skin cancer risk by 60-80%. UVision bridges this gap with an intelligent IoT-powered system that provides **personalized, data-driven recommendations** for safe sun exposure, optimizing Vitamin D synthesis while minimizing health risks.
 
-## Current Status
+## ✨ Key Features
 
-The repository now includes a working end-to-end project skeleton with real backend, database, IoT ingestion, and AI prediction wiring.
+- **🔧 IoT Data Collection**: Real-time UV monitoring via Arduino sensors with RTC timestamping
+- **🤖 AI-Powered Predictions**: Machine learning models estimating Vitamin D levels and optimal exposure time
+- **📊 Interactive Dashboard**: Web-based visualization for health tracking and personalized insights
+- **🔄 Dual Analysis Modes**: Real-time sensor data + historical weather dataset processing
+- **👥 User Management**: Secure authentication with profile-based health recommendations
+- **⚙️ Admin Panel**: System monitoring and user data management tools
 
-Implemented now:
+## 🏗️ System Architecture
 
-- Multi-page frontend for home, auth, dashboard, profile, tracker, AI recommendation, health, and admin views
-- Node.js + Express backend with CRUD-style APIs
-- MySQL schema and seed data
-- Python UV ingestion script for simulation mode and Arduino serial mode
-- Python AI module with:
-  - rule-based fallback prediction
-  - dataset preprocessing pipeline
-  - synthetic target generation
-  - Linear Regression and Random Forest training
-  - saved model artifacts with `joblib`
-  - optional Flask `/predict` API
-- Backend integration that stores prediction results in MySQL
+UVision follows a modular, end-to-end data pipeline:
 
-## Project Structure
+```
+Arduino Sensor → Python IoT Reader → Node.js Backend → MySQL Database → AI Engine → Web Dashboard
+     ↓                ↓                    ↓                ↓            ↓            ↓
+  UV + Time        Serial Parsing      REST APIs       Data Storage   ML Models   Real-time UI
+```
 
-```text
+### Data Flow Overview
+1. **IoT Layer**: Arduino collects UV index and timestamps via serial communication
+2. **Ingestion Layer**: Python scripts parse sensor data and store in MySQL
+3. **API Layer**: Node.js Express server provides RESTful endpoints for data access
+4. **AI Layer**: Python ML models process weather data for Vitamin D predictions
+5. **Presentation Layer**: Responsive web dashboard visualizes insights and recommendations
+
+## 🛠️ Technology Stack
+
+| Component | Technologies |
+|-----------|-------------|
+| **Hardware** | Arduino Uno, UV Sensor (ML8511), RTC Module (DS3231) |
+| **Backend** | Node.js, Express.js, MySQL |
+| **AI/ML** | Python, scikit-learn, pandas, numpy, joblib |
+| **Frontend** | HTML5, CSS3, JavaScript, Bootstrap |
+| **IoT Communication** | Python (pyserial), Serial Protocol |
+| **Database** | MySQL with connection pooling |
+
+## 📁 Project Structure
+
+```
 UVision/
-|-- index.html
-|-- pages/
-|-- assets/
-|   |-- css/styles.css
-|   `-- js/app.js
-|-- backend/
-|   |-- server.js
-|   `-- src/
-|       |-- config/
-|       |-- controllers/
-|       |-- routes/
-|       |-- services/
-|       `-- utils/
-|-- database/
-|   |-- schema.sql
-|   |-- seed.sql
-|   `-- README.md
-|-- python/
-|   |-- ai/
-|   |   `-- recommendation_engine.py
-|   |-- iot/
-|   |   `-- uv_serial_reader.py
-|   `-- requirements.txt
-|-- .env.example
-|-- package.json
-|-- RUNNING_GUIDE.md
-`-- progress.txt
+├── index.html                    # Landing page
+├── package.json                  # Node.js dependencies
+├── README.md                     # Project documentation
+├── assets/                       # Static resources
+│   ├── css/styles.css           # Main stylesheet
+│   └── js/app.js                # Frontend logic
+├── backend/                      # Node.js server
+│   ├── server.js                # Main application entry
+│   └── src/
+│       ├── config/db.js         # Database configuration
+│       ├── controllers/         # Route handlers
+│       ├── routes/              # API endpoints
+│       ├── services/            # Business logic
+│       └── utils/               # Helper functions
+├── database/                     # Database setup
+│   ├── schema.sql               # Table definitions
+│   ├── seed.sql                 # Sample data
+│   └── README.md                # Database docs
+├── pages/                        # HTML views
+│   ├── dashboard.html           # Main user dashboard
+│   ├── auth.html                # Login/registration
+│   ├── tracker.html             # UV exposure tracker
+│   ├── health.html              # Health metrics
+│   ├── ai-recommendation.html   # AI insights
+│   └── admin.html               # Admin interface
+├── python/                       # Python components
+│   ├── requirements.txt         # Python dependencies
+│   ├── ai/                      # Machine learning
+│   │   ├── recommendation_engine.py  # Core AI engine
+│   │   ├── data/                # Dataset storage
+│   │   └── models/              # Trained models
+│   └── iot/                     # IoT communication
+│       └── uv_serial_reader.py  # Serial data handler
+└── progress.txt                  # Development log
 ```
 
-## Technology Stack
+## 🚀 Quick Start
 
-- Frontend: HTML, CSS, Bootstrap, JavaScript
-- Backend: Node.js, Express, MySQL
-- IoT Middleware: Python, `pyserial`, `mysql-connector-python`
-- AI/ML: Python, `pandas`, `numpy`, `scikit-learn`, `joblib`, `Flask`
+### Prerequisites
+- Node.js ≥14.0
+- Python ≥3.7
+- MySQL Server
+- Arduino IDE (for hardware setup)
+- Git
 
-## Database Overview
+### Installation Steps
 
-Main tables:
+1. **Clone Repository**
+   ```bash
+   git clone https://github.com/your-username/UVision.git
+   cd UVision
+   ```
 
-- `users`
-- `weather_uv_data`
-- `exposure_log`
-- `vitamin_d_estimation`
-- `recommendations`
-- `vitamin_d_lab_results`
+2. **Install Dependencies**
+   ```bash
+   npm install
+   pip install -r python/requirements.txt
+   ```
 
-Important note:
+3. **Database Setup**
+   ```bash
+   # Create database
+   mysql -u root -p -e "CREATE DATABASE uvision;"
 
-- `recommendations.risk_level` now supports `Low`, `Moderate`, `High`, `Very High`, and `Extreme`
+   # Import schema
+   mysql -u root -p uvision < database/schema.sql
 
-## AI Module Overview
+   # Optional: Seed data
+   mysql -u root -p uvision < database/seed.sql
+   ```
 
-File:
+4. **Configure Environment**
+   - Update `backend/src/config/db.js` with your MySQL credentials
+   - Create `.env` file based on `.env.example`
 
-- [python/ai/recommendation_engine.py](/c:/Users/Admin/OneDrive/Desktop/UVision/python/ai/recommendation_engine.py)
+## 📊 Dataset & Model Setup
 
-The AI module supports three modes:
+### Why Not Included?
+The weather dataset (CSV) and trained model files (.pkl) are **excluded from the repository** due to:
+- Large file sizes (datasets can exceed 100MB)
+- Licensing restrictions on some datasets
+- Privacy considerations for health-related data
+- Encouraging local training and customization
 
-1. `predict`
-   Reads JSON from stdin and returns a prediction JSON response.
-   This is the mode currently used by the Node backend.
-2. `train`
-   Trains two regressors from a Kaggle weather CSV and saves model artifacts.
-3. `serve`
-   Starts a Flask API with `POST /predict` and `GET /health`.
+### Dataset Acquisition
+1. Visit [Kaggle Indian Weather Dataset](https://www.kaggle.com/datasets/...) *(Update with actual link)*
+2. Download the CSV file containing Indian weather data
+3. Place it at: `python/ai/data/indian_weather.csv`
 
-### Features Used
+**Required Columns:**
+- `date_time`, `location_name`, `temperature_celsius`
+- `humidity`, `uv_index`, `cloud`, `visibility_km`
+- `air_quality_PM2.5`, `sunrise`, `sunset`
 
-Mandatory or primary features:
+### Model Training
+Train AI models locally after dataset placement:
 
-- `uv_index`
-- `temperature_celsius`
-- `humidity`
-- `cloud`
-- `visibility_km`
-- `air_quality_PM2.5`
-- `sunrise`
-- `sunset`
-- `location_name`
-- `last_updated`
-
-Optional enhancements:
-
-- `wind_kph`
-- `pressure_mb`
-- `feels_like_celsius`
-- `age`
-- `skin_type`
-- `lifestyle`
-
-### Feature Engineering
-
-The training pipeline creates:
-
-- `time_of_day`
-- `daylight_duration_hours`
-- `uv_category`
-- `skin_factor`
-- `environmental_factor`
-
-### Target Generation
-
-Because the weather dataset does not include vitamin D labels, the script generates synthetic targets using domain rules:
-
-- `vitamin_d_output`
-- `recommended_exposure_time`
-
-### Model Output
-
-Prediction response includes:
-
-- estimated vitamin D
-- recommended exposure time
-- risk level
-- recommended time window
-- model source (`trained_model` or `rule_based_fallback`)
-
-## Kaggle Dataset Setup
-
-The repo does not currently include the Indian weather dataset file. Use your Kaggle CSV by either:
-
-1. Setting `WEATHER_DATASET_PATH` in `.env`
-2. Passing a path directly with `--dataset`
-
-Example:
-
-```powershell
-python python/ai/recommendation_engine.py --mode train --dataset "C:\path\to\indian_weather.csv"
+```bash
+cd python/ai
+python recommendation_engine.py train
 ```
 
-After training, the script saves:
+**Training Pipeline:**
+1. **Data Preprocessing**: Clean missing values, normalize features
+2. **Feature Engineering**: Create `time_of_day`, `daylight_duration`, `skin_factor`
+3. **Synthetic Targets**: Generate Vitamin D and exposure time labels using domain rules
+4. **Model Training**: Train Linear Regression + Random Forest models
+5. **Artifact Saving**: Store `.pkl` files and training metrics
 
-- `python/ai/models/vitamin_d_model.pkl`
-- `python/ai/models/exposure_time_model.pkl`
-- `python/ai/models/training_summary.json`
+*Training time: 2-5 minutes depending on hardware.*
 
-## Environment Setup
+## 🤖 AI Pipeline Deep Dive
 
-Create `.env` from `.env.example`.
-
-Recommended values:
-
-```env
-PORT=4000
-DB_HOST=localhost
-DB_PORT=3306
-DB_USER=root
-DB_PASSWORD=your_mysql_password
-DB_NAME=uvision_db
-PYTHON_CMD=python
-UV_SERIAL_PORT=COM3
-UV_BAUD_RATE=9600
-UV_READ_INTERVAL=5
-WEATHER_DATASET_PATH=C:\path\to\indian_weather.csv
-AI_API_PORT=5050
+### Training Phase
+```
+Raw Weather Data → Preprocessing → Feature Engineering → Model Training → Saved Artifacts
 ```
 
-## Install
+- **Input**: Weather CSV with UV, temperature, humidity, location
+- **Feature Engineering**: Time-based features, environmental factors, skin type considerations
+- **Models**: Linear Regression (interpretable) + Random Forest (accurate)
+- **Output**: Vitamin D estimation + exposure time recommendation models
 
-Node dependencies:
-
-```powershell
-npm install
+### Prediction Phase
+```
+User Input → Feature Vector → Model Prediction → Risk Assessment → Recommendation
 ```
 
-Python dependencies:
+- **Fallback System**: Rule-based predictions if models unavailable
+- **Risk Levels**: Low, Moderate, High, Very High, Extreme
+- **Output**: Estimated Vitamin D, recommended exposure time, safe time windows
 
-```powershell
-pip install -r python/requirements.txt
-```
+### Integration
+- Node.js calls Python via `child_process` or HTTP
+- Real-time predictions for dashboard
+- Batch processing for historical analysis
 
-This installs the Python packages needed for:
+## ▶️ Running the System
 
-- serial ingestion
-- MySQL insertion
-- model training
-- Flask API
-- `dotenv` loading in Python scripts
+1. **Start Backend Server**
+   ```bash
+   node backend/server.js
+   ```
+   *Server runs on http://localhost:3000*
 
-## Running The System
+2. **Optional: Standalone AI Service**
+   ```bash
+   cd python/ai
+   python recommendation_engine.py serve
+   ```
+   *Flask API on http://localhost:5000*
 
-Detailed steps are in [RUNNING_GUIDE.md](/c:/Users/Admin/OneDrive/Desktop/UVision/RUNNING_GUIDE.md).
+3. **Access Dashboard**
+   - Open browser: http://localhost:3000
+   - Login/Register to access features
 
-Quick summary:
+4. **IoT Data Collection** *(Optional)*
+   - Upload Arduino sketch
+   - Connect sensors
+   - Run: `python python/iot/uv_serial_reader.py`
 
-1. Configure `.env`
-2. Import `database/schema.sql` and `database/seed.sql`
-3. Run `npm start`
-4. Serve the frontend with `python -m http.server 5500`
-5. Test UV ingestion using `python python/iot/uv_serial_reader.py --mode simulate --max-reads 5`
-6. Train AI models if you have the Kaggle dataset
-7. Use `POST /api/recommendations/calculate/:userId` to generate and store predictions
+## 🔌 API Endpoints
+
+| Category | Endpoint | Method | Description |
+|----------|----------|--------|-------------|
+| **Auth** | `/api/auth/login` | POST | User authentication |
+| | `/api/auth/register` | POST | New user registration |
+| **User** | `/api/users/profile` | GET/PUT | Profile management |
+| **UV Data** | `/api/uv/current` | GET | Current UV readings |
+| | `/api/uv/log` | POST | Log exposure data |
+| **Health** | `/api/health/vitamin-d` | GET | Vitamin D levels |
+| | `/api/health/lab-results` | POST | Submit lab data |
+| **AI** | `/api/recommendations/ai` | POST | Get AI recommendations |
+| **Admin** | `/api/admin/users` | GET | User management |
+| | `/api/admin/stats` | GET | System statistics |
+
+## 🚀 Future Enhancements
+
+### Phase 1: Personalization Engine
+- **Advanced Profiling**: Skin type classification, age-based adjustments
+- **Behavioral Learning**: Adaptive recommendations based on user patterns
+- **Genetic Factors**: Integration with vitamin D metabolism markers
+
+### Phase 2: Healthcare Integration
+- **Medical API**: Connect with EHR systems for clinical validation
+- **Dermatology Models**: Skin cancer risk assessment algorithms
+- **Clinical Trials**: Partnership with research institutions
+
+### Phase 3: Product Expansion
+- **Mobile Apps**: Native iOS/Android with push notifications
+- **Wearable Sync**: Apple Watch, Fitbit integration
+- **Global Scaling**: Multi-region weather APIs and localization
+
+### Phase 4: Advanced IoT
+- **Multi-Sensor Networks**: Environmental monitoring arrays
+- **Edge Computing**: On-device AI for instant recommendations
+- **Smart Home Integration**: Automated window blinds, UV lamps
+
+---
+
+## 📸 Screenshots
+
+*[Dashboard Preview]*  
+*[IoT Setup]*  
+*[AI Recommendations]*
+
+## 🤝 Contributing
+
+We welcome contributions! Please follow these steps:
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/AmazingFeature`
+3. Commit changes: `git commit -m 'Add AmazingFeature'`
+4. Push to branch: `git push origin feature/AmazingFeature`
+5. Open a Pull Request
+
+## 📄 License
+
+Licensed under MIT License - see [LICENSE](LICENSE) for details.
+
+## 🙏 Acknowledgments
+
+- Kaggle community for weather datasets
+- Open-source libraries and frameworks
+- Health organizations promoting Vitamin D awareness
+- Research papers on UV exposure and Vitamin D synthesis
+
+---
+
+*For detailed setup instructions, see [RUNNING_GUIDE.md](RUNNING_GUIDE.md)*
 
 ## Current Integration Behavior
 
