@@ -3,3 +3,12 @@ node_modules/
 npm-debug.log*
 __pycache__/
 *.pyc
+# AI models
+*.pkl
+# Dataset
+python/ai/data/*.csv
+# Logs
+*.log
+# OS files
+.DS_Store
+Thumbs.db
